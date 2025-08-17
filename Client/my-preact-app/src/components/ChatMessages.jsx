@@ -38,7 +38,7 @@ export default function ChatMessages({ messages = [], loading = false }) {
             }`}
           >
             {msg.role === 'assistant' && (
-              <div className="text-xs text-gray-500 mb-1">QYRAL AI</div>
+              <div className="text-xs text-gray-500 mb-1">PerlFlow AI</div>
             )}
             <div
               dangerouslySetInnerHTML={{
@@ -58,7 +58,7 @@ export default function ChatMessages({ messages = [], loading = false }) {
       {loading && (
         <div className="flex justify-start">
           <div className="bg-gray-100 text-gray-900 border p-3 rounded-lg max-w-[70%]">
-            <div className="text-xs text-gray-500 mb-1">QYRAL AI</div>
+            <div className="text-xs text-gray-500 mb-1">PerlFlow AI</div>
             <div className="flex items-center space-x-1">
               <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
               <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>

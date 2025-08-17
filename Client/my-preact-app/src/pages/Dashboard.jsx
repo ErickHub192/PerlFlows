@@ -164,7 +164,7 @@ const Dashboard = ({ isAuthenticated = false, onLoginClick = () => {} }) => {
             <div className="w-16 h-16 flex items-center justify-center">
               <img 
                 src="/logo.svg" 
-                alt="QYRAL Logo" 
+                alt="PerlFlow Logo" 
                 className="w-16 h-16"
                 style={{ filter: 'none' }}
               />

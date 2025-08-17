@@ -448,13 +448,13 @@ export default function ChatView({ chatId }) {
   const handleFormSubmit = async (formData) => {
     setShowDynamicForm(false);
 
-    // ✨ Handle Smart Forms submission (direct to QYRAL AI)
+    // ✨ Handle Smart Forms submission (direct to PerlFlow AI)
     if (formSchemaEndpoint === null && window.smartFormContext?.isSmartForm) {
       try {
         console.log('[ChatView] Submitting Smart Form with data:', formData);
         console.log('[ChatView] Smart Form context:', window.smartFormContext);
 
-        // Create a user message with the form data for QYRAL AI to process
+        // Create a user message with the form data for PerlFlow AI to process
         const smartFormMessage = `Completé la información requerida: ${JSON.stringify(formData)}`;
         
         // Send the message through normal chat flow
@@ -545,7 +545,7 @@ export default function ChatView({ chatId }) {
                 onClick={() => route('/workflows')}
                 className="text-lg font-bold text-text-primary hover:text-purple-400 transition-colors duration-200 cursor-pointer"
               >
-                Asistente QYRAL
+                Asistente PerlFlow
               </button>
               <div className="flex items-center gap-2 text-xs text-text-secondary">
                 <div className="status-dot status-active"></div>
@@ -802,7 +802,7 @@ export default function ChatView({ chatId }) {
             <div className="w-16 h-16 surface-elevated rounded-2xl flex items-center justify-center mb-4 opacity-80">
               <img 
                 src="/logo.svg" 
-                alt="QYRAL Logo" 
+                alt="PerlFlow Logo" 
                 className="w-12 h-12"
                 style={{ filter: 'none' }}
               />

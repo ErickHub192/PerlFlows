@@ -16,9 +16,9 @@
     <line x1="15" y1="0" x2="20" y2="0" stroke="#1a1a1a" stroke-width="1.5" opacity="0.6"/>
   </g>
   
-  <!-- Texto QYRAL -->
-  <text x="110" y="60" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#1a1a1a" letter-spacing="2px">
-    QYRAL
+  <!-- Texto PerlFlow -->
+  <text x="110" y="60" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#1a1a1a" letter-spacing="2px">
+    PerlFlow
   </text>
   
   <!-- Tagline sutil -->
