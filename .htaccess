@@ -1,0 +1,14 @@
+RewriteEngine On
+
+# API calls van al VPS
+RewriteRule ^api/(.*)$ https://perlflow.com/api/$1 [P,L]
+
+# Frontend en la raíz
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.html [L]
+
+# Headers para CORS
+Header always set Access-Control-Allow-Origin "https://perlflow.com"
+Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+Header always set Access-Control-Allow-Headers "Content-Type, Authorization"
