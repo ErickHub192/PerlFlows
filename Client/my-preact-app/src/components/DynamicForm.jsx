@@ -29,7 +29,7 @@ const customScrollStyle = `
   }
 `;
 
-// ✨ Helper function to convert QYRAL AI's smart form format to JSON Schema format
+// ✨ Helper function to convert PerlFlow AI's smart form format to JSON Schema format
 function convertSmartFormToJsonSchema(smartForm) {
   const properties = {};
   const required = [];
@@ -122,7 +122,7 @@ function DynamicForm({ schemaEndpoint, smartFormSchema, onSubmit, onCancel }) {
     if (schemaEndpoint === null && window.smartFormContext?.isSmartForm) {
       console.log("Using Smart Form schema from window context:", window.smartFormContext.formSchema);
       
-      // Convert QYRAL AI's smart form format to JSON Schema format
+      // Convert PerlFlow AI's smart form format to JSON Schema format
       const convertedSchema = convertSmartFormToJsonSchema(window.smartFormContext.formSchema);
       console.log("Converted schema:", convertedSchema);
       
@@ -136,7 +136,7 @@ function DynamicForm({ schemaEndpoint, smartFormSchema, onSubmit, onCancel }) {
     if (smartFormSchema) {
       console.log("Using Smart Form schema:", smartFormSchema);
       
-      // Convert QYRAL AI's smart form format to JSON Schema format
+      // Convert PerlFlow AI's smart form format to JSON Schema format
       const convertedSchema = convertSmartFormToJsonSchema(smartFormSchema);
       console.log("Converted schema:", convertedSchema);
       

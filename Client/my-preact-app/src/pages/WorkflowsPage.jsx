@@ -122,7 +122,7 @@ export default function WorkflowsPage() {
               <ol className="text-sm text-text-secondary space-y-1">
                 <li>1. Crea un chat nuevo desde el sidebar izquierdo</li>
                 <li>2. Describe tu automatización en lenguaje natural</li>
-                <li>3. QYRAL AI configurará los pasos automáticamente</li>
+                <li>3. PerlFlow AI configurará los pasos automáticamente</li>
                 <li>4. Al finalizar, guarda el workflow para reutilizarlo</li>
               </ol>
             </div>

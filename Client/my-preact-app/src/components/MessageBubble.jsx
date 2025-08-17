@@ -19,7 +19,7 @@ export default function MessageBubble({ message, isTemp = false }) {
           
           {/* Contenido básico */}
           <div className="text-sm font-semibold mb-1">
-            {isUser ? 'Tú' : 'QYRAL AI'}
+            {isUser ? 'Tú' : 'PerlFlow AI'}
           </div>
           
           <div className="whitespace-pre-wrap break-words">

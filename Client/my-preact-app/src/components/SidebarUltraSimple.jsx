@@ -73,7 +73,7 @@ function SidebarUltraSimple() {
           <div className="w-10 h-10 surface-elevated rounded-xl flex items-center justify-center text-lg font-bold text-white">
             ⚡
           </div>
-          <div className="text-lg font-bold gradient-text-elegant">QYRAL</div>
+          <div className="text-lg font-bold gradient-text-elegant">PerlFlow</div>
         </div>
         
         <button

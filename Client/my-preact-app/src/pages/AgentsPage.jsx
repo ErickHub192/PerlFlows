@@ -61,7 +61,7 @@ export default function AgentsPage() {
         <div className="text-center py-12">
           <div className="text-gray-500 mb-4">No hay agentes creados</div>
           <p className="text-sm text-gray-400 mb-6">
-            Los agentes son creados automáticamente cuando QYRAL AI diseña una automatización que los requiere.
+            Los agentes son creados automáticamente cuando PerlFlow AI diseña una automatización que los requiere.
           </p>
         </div>
       ) : (

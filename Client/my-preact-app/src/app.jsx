@@ -100,12 +100,12 @@ function App() {
           <div className="w-16 h-16 surface-elevated rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-elegant">
             <img 
               src="/logo.svg" 
-              alt="QYRAL Logo" 
+              alt="PerlFlow Logo" 
               className="w-10 h-10"
               style={{ filter: 'none' }}
             />
           </div>
-          <div className="text-lg font-semibold gradient-text">Cargando QYRAL AI...</div>
+          <div className="text-lg font-semibold gradient-text">Cargando PerlFlow AI...</div>
         </div>
       </div>
     );
@@ -128,12 +128,12 @@ function App() {
                   <div className="w-12 h-12 flex items-center justify-center">
                     <img 
                       src="/logo.svg" 
-                      alt="QYRAL Logo" 
+                      alt="PerlFlow Logo" 
                       className="w-12 h-12"
                       style={{ filter: 'none' }}
                     />
                   </div>
-                  QYRAL AI
+                  PerlFlow AI
                 </Link>
               </div>
               <div className="flex items-center gap-2">
