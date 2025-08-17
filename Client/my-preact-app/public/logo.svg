@@ -1,0 +1,18 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- Logo símbolo - Forma abstracta que representa AI y automatización -->
+  <g transform="translate(50, 50)">
+    <!-- Círculo exterior minimalista -->
+    <circle cx="0" cy="0" r="40" fill="none" stroke="white" stroke-width="3" opacity="0.8"/>
+    
+    <!-- Forma geométrica central que sugiere procesamiento y flujo -->
+    <path d="M -20 -10 L 20 -10 L 15 0 L 20 10 L -20 10 L -15 0 Z" fill="white"/>
+    
+    <!-- Puntos que representan datos/información -->
+    <circle cx="-30" cy="0" r="3" fill="white"/>
+    <circle cx="30" cy="0" r="3" fill="white"/>
+    
+    <!-- Líneas sutiles que sugieren conexiones -->
+    <line x1="-27" y1="0" x2="-20" y2="0" stroke="white" stroke-width="2" opacity="0.6"/>
+    <line x1="20" y1="0" x2="27" y2="0" stroke="white" stroke-width="2" opacity="0.6"/>
+  </g>
+</svg>

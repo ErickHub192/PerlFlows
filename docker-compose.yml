@@ -1,0 +1,22 @@
+services:
+  kyra:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - REDIS_HOST=redis
+      - OTEL_ENDPOINT=http://otel-collector:4318/v1/traces
+    depends_on:
+      - redis
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.127.0
+    volumes:
+      - ../otel-collector-config.yaml:/etc/otelcol/config.yaml
+    ports:
+      - "4317:4317"
+      - "4318:4318"

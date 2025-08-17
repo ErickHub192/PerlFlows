@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tema Elegante - Preview</title>
+    <link rel="stylesheet" href="./index.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-main text-text-primary min-h-screen">
+    <div class="max-w-6xl mx-auto p-8 space-y-8">
+        
+        <!-- Header -->
+        <header class="text-center mb-16">
+            <h1 class="text-6xl font-bold gradient-text mb-4">
+                QYRAL AI
+            </h1>
+            <p class="text-xl text-subtle">
+                Automatización inteligente con estilo elegante
+            </p>
+        </header>
+
+        <!-- Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            
+            <!-- Card 1 - Enhanced -->
+            <div class="glass-card p-6">
+                <div class="flex items-center mb-3">
+                    <div class="w-2 h-2 bg-white rounded-full mr-3 opacity-60"></div>
+                    <h3 class="text-xl font-semibold text-elegant">
+                        Workflows
+                    </h3>
+                </div>
+                <p class="text-subtle mb-4">
+                    Crea workflows automáticos con inteligencia artificial
+                </p>
+                <button class="btn-primary px-4 py-2 rounded-lg w-full">
+                    Crear Workflow
+                </button>
+            </div>
+
+            <!-- Card 2 - Enhanced -->
+            <div class="glass-card-accent p-6">
+                <div class="flex items-center mb-3">
+                    <div class="w-2 h-2 bg-white rounded-full mr-3 opacity-60"></div>
+                    <h3 class="text-xl font-semibold text-elegant">
+                        Conectores
+                    </h3>
+                </div>
+                <p class="text-subtle mb-4">
+                    Conecta tus servicios favoritos sin esfuerzo
+                </p>
+                <button class="btn-glass px-4 py-2 rounded-lg w-full">
+                    Ver Conectores
+                </button>
+            </div>
+
+            <!-- Card 3 - Enhanced -->
+            <div class="glass-card p-6">
+                <div class="flex items-center mb-3">
+                    <div class="w-2 h-2 bg-white rounded-full mr-3 opacity-60"></div>
+                    <h3 class="text-xl font-semibold text-elegant">
+                        Análisis
+                    </h3>
+                </div>
+                <p class="text-subtle mb-4">
+                    Monitorea el rendimiento de tus automatizaciones
+                </p>
+                <button class="btn-secondary px-4 py-2 rounded-lg w-full">
+                    Ver Métricas
+                </button>
+            </div>
+        </div>
+
+        <!-- Enhanced Feature Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+            <!-- Feature 1 -->
+            <div class="surface-elevated p-6 rounded-2xl">
+                <h3 class="text-lg font-semibold text-elegant mb-3">
+                    ✨ Interfaz Elegante
+                </h3>
+                <p class="text-subtle">
+                    Diseño minimalista con contrastes sutiles que resaltan la funcionalidad
+                </p>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="surface-card p-6 rounded-2xl">
+                <h3 class="text-lg font-semibold text-elegant mb-3">
+                    🔮 Efectos Glassmorphism
+                </h3>
+                <p class="text-subtle">
+                    Elementos translúcidos con bordes blancos que crean profundidad visual
+                </p>
+            </div>
+        </div>
+
+        <!-- Chat Interface Preview -->
+        <div class="glass-card p-8 max-w-4xl mx-auto">
+            <h2 class="text-2xl font-bold text-elegant mb-6">
+                Interfaz de Chat
+            </h2>
+            
+            <div class="space-y-4 mb-6">
+                <!-- User Message -->
+                <div class="flex justify-end">
+                    <div class="surface-elevated px-4 py-3 rounded-2xl max-w-md">
+                        <p class="text-elegant">
+                            Envía un email diario a las 7:00 AM con el mensaje "stay hard"
+                        </p>
+                    </div>
+                </div>
+
+                <!-- AI Response -->
+                <div class="flex justify-start">
+                    <div class="surface-subtle px-4 py-3 rounded-2xl max-w-md">
+                        <p class="text-subtle">
+                            Perfecto. He creado un workflow que enviará un email diario a las 7:00 AM. 
+                            Solo necesito que completes algunos parámetros.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="flex gap-3">
+                <input 
+                    type="text" 
+                    placeholder="Escribe tu mensaje..."
+                    class="surface-input flex-1 px-4 py-3 rounded-xl focus-elegant text-elegant placeholder:text-muted"
+                >
+                <button class="btn-primary px-6 py-3 rounded-xl">
+                    Enviar
+                </button>
+            </div>
+        </div>
+
+        <!-- Status Indicators -->
+        <div class="glass-card p-6 max-w-2xl mx-auto">
+            <h3 class="text-xl font-semibold text-elegant mb-4">
+                Estado de Servicios
+            </h3>
+            
+            <div class="space-y-3">
+                <div class="flex items-center gap-3">
+                    <div class="status-dot status-active"></div>
+                    <span class="text-elegant">Gmail</span>
+                    <span class="text-subtle ml-auto">Conectado</span>
+                </div>
+                
+                <div class="flex items-center gap-3">
+                    <div class="status-dot status-paused"></div>
+                    <span class="text-elegant">Drive</span>
+                    <span class="text-subtle ml-auto">Pausado</span>
+                </div>
+                
+                <div class="flex items-center gap-3">
+                    <div class="status-dot status-error"></div>
+                    <span class="text-elegant">Slack</span>
+                    <span class="text-subtle ml-auto">Error</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="divider-elegant"></div>
+
+        <!-- Typography Examples -->
+        <div class="text-center space-y-4">
+            <h2 class="text-3xl font-bold gradient-text-elegant">
+                Texto Elegante
+            </h2>
+            <p class="text-subtle text-lg">
+                Tipografía optimizada para máxima legibilidad
+            </p>
+            <p class="text-muted">
+                Elementos sutiles que no distraen
+            </p>
+        </div>
+
+    </div>
+</body>
+</html>

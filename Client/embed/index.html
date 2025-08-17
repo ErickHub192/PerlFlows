@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/dist/tailwind.min.css" rel="stylesheet" />
+    <style id="custom-styles">
+        /* Estilos personalizados se agregan aquí dinámicamente */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        .edit-btn {
+            transition: all 0.2s ease-in-out;
+            backdrop-filter: blur(10px);
+            background: rgba(59, 130, 246, 0.9);
+        }
+        
+        .edit-btn:hover {
+            background: rgba(37, 99, 235, 0.9);
+            transform: translateY(-1px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+        }
+        
+        .modal-backdrop {
+            backdrop-filter: blur(8px);
+            background: rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+    <!-- Botón de Edición (Esquina Superior Derecha) -->
+    <button id="edit-page-btn" class="edit-btn fixed top-4 right-4 z-50 text-white px-4 py-2 rounded-lg shadow-lg font-medium">
+        ✏️ Editar Página
+    </button>
+    
+    <!-- Aplicación Principal de Chat -->
+    <div id="app" class="h-screen p-4">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-3xl font-bold mb-6 text-center text-gray-800">Chat con Agente IA</h1>
+            <div id="chat-container" class="bg-white rounded-lg shadow-md p-6 min-h-[500px]">
+                <!-- El contenido del chat se carga aquí -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de Edición -->
+    <div id="edit-modal" class="hidden fixed inset-0 modal-backdrop z-40">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="modal-content w-full max-w-2xl p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Personalizar Página</h2>
+                    <button id="close-modal-btn" class="text-gray-500 hover:text-gray-700 text-2xl font-bold">
+                        ×
+                    </button>
+                </div>
+                
+                <div class="mb-6">
+                    <p class="text-gray-600 mb-4">
+                        Describe cómo quieres personalizar esta página usando lenguaje natural:
+                    </p>
+                    
+                    <textarea 
+                        id="customization-input" 
+                        class="w-full h-32 p-4 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="Ejemplo: 'Cambia el color de fondo a azul claro y agrega un logo en la esquina superior izquierda'"
+                    ></textarea>
+                </div>
+                
+                <div class="flex justify-between items-center">
+                    <div class="text-sm text-gray-500">
+                        <span class="font-medium">Ejemplos:</span> cambiar colores, agregar logos, modificar fuentes, ajustar espaciado
+                    </div>
+                    
+                    <div class="flex space-x-3">
+                        <button id="cancel-btn" class="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">
+                            Cancelar
+                        </button>
+                        <button id="apply-changes-btn" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 font-medium">
+                            Aplicar Cambios
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Loading State -->
+                <div id="loading-state" class="hidden mt-4 p-4 bg-blue-50 rounded-lg">
+                    <div class="flex items-center space-x-3">
+                        <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-500"></div>
+                        <span class="text-blue-700">Generando personalización...</span>
+                    </div>
+                </div>
+                
+                <!-- Success/Error Messages -->
+                <div id="message-container" class="hidden mt-4 p-4 rounded-lg">
+                    <div id="message-text"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script type="module" src="/static/embed/main.js"></script>
+</body>
+</html>

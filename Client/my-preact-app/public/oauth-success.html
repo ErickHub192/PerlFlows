@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OAuth Éxito</title>
+</head>
+<body>
+  <h1>¡Conectado con éxito!</h1>
+  <script>
+    if (window.opener) {
+      window.opener.postMessage({ oauth: 'success' }, window.origin);
+      setTimeout(() => window.close(), 1000);
+    }
+  </script>
+</body>
+</html>

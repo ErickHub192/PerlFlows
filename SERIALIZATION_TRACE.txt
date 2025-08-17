@@ -1,0 +1,116 @@
+🔍 TRAZA COMPLETA DE SERIALIZACIÓN/DESERIALIZACIÓN - ROOT CAUSE ANALYSIS
+════════════════════════════════════════════════════════════════════════════════════
+
+PROBLEMA IDENTIFICADO: DISCREPANCIA ENTRE TIPOS DE DATOS
+════════════════════════════════════════════════════════════════════════════════════
+
+📊 **PATH DE SERIALIZACIÓN COMPLETO:**
+
+**1. MEMORY LOADING (✅ FUNCIONA - Dict[str, Any]):**
+```python
+# conversation_memory_service.py
+🔧 DEFINITIVE FIX: Loaded 2 workflow steps with default_auth mapping: {'Gmail': 'oauth2_gmail'}
+steps_to_save = existing_context.get("steps", [])  # List[Dict[str, Any]]
+```
+
+**2. WORKFLOW ENGINE PROCESSING (✅ FUNCIONA - Dict[str, Any]):**
+```python
+# workflow_engine_simple.py:762
+steps=steps_to_save,  # ✅ List[Dict[str, Any]] with all data
+```
+
+**3. RESPONSE BUILDER INPUT (✅ RECIBE DATOS COMPLETOS):**
+```python
+# response_builder.py:76
+def build_success_response(
+    steps: List[Dict[str, Any]],  # ✅ RECIBE DATOS CORRECTOS
+    ...
+) -> WorkflowCreationResult:
+```
+
+**4. WORKFLOW CREATION RESULT DTO (❌ AQUÍ ESTÁ EL PROBLEMA):**
+```python
+# workflow_creation_result_dto.py:28
+class WorkflowCreationResultDTO(BaseModel):
+    steps: List[StepMetaDTO] = Field(...)  # ❌ ESPERA StepMetaDTO, RECIBE Dict
+```
+
+**5. SERIALIZATION AUTOMÁTICA PYDANTIC (❌ CONVERSIÓN FALLA):**
+```python
+return WorkflowCreationResultDTO(
+    steps=steps,  # List[Dict[str, Any]]
+    # ❌ Pydantic intenta convertir Dict -> StepMetaDTO
+    # ❌ StepMetaDTO constructor genera nuevos UUIDs
+    # ❌ Parámetros se pierden en conversión
+)
+```
+
+🚨 **ROOT CAUSE DEFINITIVO IDENTIFICADO:**
+
+**INCONSISTENCIA DE TIPOS:**
+- **Memory/Workflow Engine**: Maneja `List[Dict[str, Any]]` ✅
+- **Response Builder**: Recibe `List[Dict[str, Any]]` ✅  
+- **WorkflowCreationResultDTO**: Espera `List[StepMetaDTO]` ❌
+- **Pydantic Auto-conversion**: `Dict -> StepMetaDTO` pierde datos ❌
+
+**QUÉ PASA EN LA CONVERSIÓN:**
+
+1. **Datos de entrada (correcto):**
+```json
+{
+  "id": "c82b50dc-b1c5-4019-958b-23dfe5b858ec",
+  "params": {"cron_expression": "0 6 * * *"},
+  "default_auth": "oauth2_gmail"
+}
+```
+
+2. **Pydantic convierte Dict -> StepMetaDTO:**
+```python
+# StepMetaDTO constructor
+id: UUID = Field(default_factory=uuid4)  # ❌ NUEVO UUID GENERADO
+params: Dict[str, Any] = Field(...)      # ❌ SOLO CAMPOS REQUERIDOS MAPEADOS
+```
+
+3. **Resultado (corrupción):**
+```json
+{
+  "id": "c828b415-ecfb-4516-a6c2-ab4ded859a98",  // ❌ UUID NUEVO
+  "params": {},                                   // ❌ PARAMS PERDIDOS
+  "default_auth": "oauth2_gmail"                 // ✅ PRESERVADO
+}
+```
+
+**💡 SOLUCIÓN:**
+
+**OPCIÓN 1: FIX WorkflowCreationResultDTO (RECOMENDADO):**
+```python
+# workflow_creation_result_dto.py
+steps: List[Dict[str, Any]] = Field(...)  # Cambiar de StepMetaDTO a Dict
+```
+
+**OPCIÓN 2: FIX Response Builder (ALTERNATIVO):**
+```python
+# response_builder.py
+steps_as_dto = [StepMetaDTO.model_validate(step) for step in steps]
+return WorkflowCreationResultDTO(steps=steps_as_dto)
+```
+
+**OPCIÓN 3: FIX Workflow Engine (MÁS COMPLEJO):**
+```python
+# workflow_engine_simple.py
+steps_as_dto = [StepMetaDTO.model_validate(step) for step in steps_to_save]
+```
+
+**🎯 RECOMENDACIÓN: OPCIÓN 1**
+
+Cambiar `WorkflowCreationResultDTO.steps` de `List[StepMetaDTO]` a `List[Dict[str, Any]]` porque:
+
+1. ✅ **Todo el pipeline ya usa Dict[str, Any]**
+2. ✅ **Evita conversión costosa y propensa a errores**
+3. ✅ **Mantiene UUID integrity**
+4. ✅ **Preserva parámetros completos**
+5. ✅ **Consistencia con memoria y processing**
+
+**STATUS: 🎯 ROOT CAUSE IDENTIFICADO - PYDANTIC TYPE MISMATCH**
+
+La lógica funciona perfectamente, solo hay inconsistencia de tipos en la interfaz final.

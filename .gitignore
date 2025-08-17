@@ -1,0 +1,103 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+motorW/
+venv/
+ENV/
+env/
+.venv/
+Kyra-AI/
+
+# Environment variables
+.env
+.env.local
+.env.production
+.env.test
+*.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+logs/
+*.log
+backend.log
+backend_wsl.log
+frontend.log
+ngrok.log
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# OS
+.DS_Store
+Thumbs.db
+*.tmp
+
+# Test files
+test_*.py
+sexo.txt
+xp.txt
+*.test
+
+# Cache
+.cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Node modules
+node_modules/
+npm-debug.log*
+Client/embed/package-lock.json
+
+# Temporary files
+temp/
+tmp/
+*.temp
+*.dist-info/
+
+# FastAPI
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# ngrok
+ngrok
+ngrok.exe
+
+# Backups
+*.bak
+*.backup
+
+# Personal notes
+notes.txt
+todo.txt
+readme_personal.md
+

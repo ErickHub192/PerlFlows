@@ -1,0 +1,74 @@
+{
+  "name": "qyral-ai-app",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
+    "test:e2e": "playwright test",
+    "lint": "eslint src --ext .js,.jsx,.ts,.tsx --fix",
+    "lint:check": "eslint src --ext .js,.jsx,.ts,.tsx",
+    "format": "prettier --write src",
+    "format:check": "prettier --check src",
+    "type-check": "tsc --noEmit",
+    "pre-commit": "npm run lint:check && npm run format:check && npm run type-check && npm run test",
+    "analyze": "vite-bundle-analyzer dist/stats.html"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.79.0",
+    "preact": "^10.26.2",
+    "preact-router": "^4.1.2",
+    "uuid": "^11.1.0",
+    "zustand": "^5.0.5"
+  },
+  "devDependencies": {
+    "@preact/preset-vite": "^2.10.1",
+    "@rollup/rollup-win32-x64-msvc": "^4.43.0",
+    "@testing-library/jest-dom": "^6.4.2",
+    "@testing-library/preact": "^3.2.3",
+    "@testing-library/user-event": "^14.5.2",
+    "@types/node": "^20.11.24",
+    "@types/uuid": "^9.0.8",
+    "@typescript-eslint/eslint-plugin": "^7.1.1",
+    "@typescript-eslint/parser": "^7.1.1",
+    "@vitest/coverage-v8": "^1.4.0",
+    "@vitest/ui": "^1.4.0",
+    "autoprefixer": "^10.4.21",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.5",
+    "eslint-plugin-security": "^2.1.1",
+    "husky": "^9.0.11",
+    "jsdom": "^24.0.0",
+    "lint-staged": "^15.2.2",
+    "playwright": "^1.43.1",
+    "postcss": "^8.5.4",
+    "prettier": "^3.2.5",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.4.2",
+    "vite": "^6.3.5",
+    "vite-bundle-analyzer": "^0.7.0",
+    "vitest": "^1.4.0"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,css,md}": [
+      "prettier --write"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged && npm run type-check && npm run test --passWithNoTests"
+    }
+  }
+}

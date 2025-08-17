@@ -1,0 +1,159 @@
+como se guardaba antes , exito
+[
+  {
+    "flow_id": "d1cc9880-0dc8-4b52-a846-9cb301448522",
+    "name": "Workflow sin nombre",
+    "spec": {
+      "steps": [
+        {
+          "id": "d7bef948-89d5-4f13-aff9-1af73ccc3116",
+          "params": {
+            "cron_expression": "*/5 * * * *"
+          },
+          "node_id": "632643f1-e93a-45a0-b156-a0ac4c3b11a9",
+          "use_case": "Disparar flujos recurrentes (cada día, hora o minuto) usando expresiones cron estándar.",
+          "action_id": "c30bca37-2906-4a98-9ff7-bcd2ac33a1a4",
+          "node_name": "Cron_Trigger",
+          "reasoning": "",
+          "step_type": "action",
+          "depends_on": [],
+          "parameters": {
+            "cron_expression": "*/5 * * * *"
+          },
+          "action_name": "schedule",
+          "description": "Programar tarea recurrente cada 5 minutos usando cron",
+          "params_meta": [
+            {
+              "name": "cron_expression",
+              "type": "string",
+              "param_id": "114f20a2-a38b-4532-9397-d67310f94ff2",
+              "required": true,
+              "description": "Expresión CRON"
+            }
+          ],
+          "default_auth": null,
+          "step_metadata": {
+            "planned_by": "kyra",
+            "inferred_parameters": 1,
+            "selection_reasoning": ""
+          },
+          "execution_step": 1,
+          "kyra_confidence": 0.8,
+          "parameters_metadata": [
+            {
+              "name": "cron_expression",
+              "type": "string",
+              "param_id": "114f20a2-a38b-4532-9397-d67310f94ff2",
+              "required": true,
+              "description": "Expresión CRON"
+            }
+          ]
+        },
+        {
+          "id": "b986b2c7-dc04-46ff-9a88-b12797263480",
+          "params": {
+            "from": "erickgptpremium@gmail.com",
+            "email": "erickarriolaaguillon123@gmail.com",
+            "message": "STAY HARD",
+            "subject": "STAY HARD"
+          },
+          "node_id": "17beb974-920c-4d83-9f90-0f8f5e8fdff4",
+          "use_case": "Enviar correos automáticos de bienvenida o confirmación cuando se registra un formulario o se crea un nuevo registro.",
+          "action_id": "eb984a95-a153-41ca-970e-8fca193994e6",
+          "node_name": "Gmail",
+          "reasoning": "",
+          "step_type": "action",
+          "depends_on": [],
+          "parameters": {
+            "from": "erickgptpremium@gmail.com",
+            "email": "erickarriolaaguillon123@gmail.com",
+            "message": "STAY HARD",
+            "subject": "STAY HARD"
+          },
+          "action_name": "send_messages",
+          "description": "Enviar correo mediante Gmail API con el mensaje 'STAY HARD'",
+          "params_meta": [
+            {
+              "name": "message",
+              "type": "string",
+              "param_id": "0f8e1607-5271-47ef-a1cb-577ca06ae7e9",
+              "required": true,
+              "description": "Cuerpo del mensaje"
+            },
+            {
+              "name": "subject",
+              "type": "string",
+              "param_id": "4e686bf9-14cd-417e-af86-959bae8e05a0",
+              "required": true,
+              "description": "Asunto del correo"
+            },
+            {
+              "name": "email",
+              "type": "string",
+              "param_id": "b3ed68e6-f0f4-4643-9ff1-f3952591b43d",
+              "required": true,
+              "description": "Correo destinatario"
+            },
+            {
+              "name": "from",
+              "type": "string",
+              "param_id": "5669df33-cf31-42a9-908a-9f431cde5cce",
+              "required": true,
+              "description": "Correo remitente"
+            }
+          ],
+          "default_auth": "oauth2_gmail",
+          "step_metadata": {
+            "planned_by": "kyra",
+            "inferred_parameters": 4,
+            "selection_reasoning": ""
+          },
+          "execution_step": 2,
+          "kyra_confidence": 0.8,
+          "parameters_metadata": [
+            {
+              "name": "message",
+              "type": "string",
+              "param_id": "0f8e1607-5271-47ef-a1cb-577ca06ae7e9",
+              "required": true,
+              "description": "Cuerpo del mensaje"
+            },
+            {
+              "name": "subject",
+              "type": "string",
+              "param_id": "4e686bf9-14cd-417e-af86-959bae8e05a0",
+              "required": true,
+              "description": "Asunto del correo"
+            },
+            {
+              "name": "email",
+              "type": "string",
+              "param_id": "b3ed68e6-f0f4-4643-9ff1-f3952591b43d",
+              "required": true,
+              "description": "Correo destinatario"
+            },
+            {
+              "name": "from",
+              "type": "string",
+              "param_id": "5669df33-cf31-42a9-908a-9f431cde5cce",
+              "required": true,
+              "description": "Correo remitente"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "updated_at": "2025-07-27 05:18:10.472518"
+      },
+      "workflow_type": "classic",
+      "workflow_summary": {}
+    },
+    "created_at": "2025-07-27 05:05:05.756561+00",
+    "updated_at": "2025-07-27 23:04:56.151297+00",
+    "is_active": false,
+    "spec_version": 1,
+    "owner_id": 1,
+    "chat_id": "d3703558-5d59-43e2-bf25-412c30e26767"
+  },
+  como se guarda actualmente, ya no bullshit i think gg 
+  {"steps": [{"type": "trigger", "node_id": "632643f1-e93a-45a0-b156-a0ac4c3b11a9", "action_id": "c30bca37-2906-4a98-9ff7-bcd2ac33a1a4", "parameters": {"cron_expression": "0 7 * * *"}, "action_name": "schedule", "description": "Activa el workflow diariamente a las 7:00 am.", "execution_step": 1}, {"type": "action", "node_id": "17beb974-920c-4d83-9f90-0f8f5e8fdff4", "action_id": "eb984a95-a153-41ca-970e-8fca193994e6", "parameters": {"from": "y@gmail.com", "email": "x@gmail.com", "message": "STAY HARD", "subject": "STAY HARD"}, "action_name": "send_messages", "description": "Envía un correo electrónico con el mensaje motivacional.", "execution_step": 2}], "metadata": {"created_at": "2025-08-12 04:43:41.076013", "description": "Workflow generado automáticamente con 2 pasos"}, "workflow_type": "classic", "workflow_summary": {"title": "Workflow 2 pasos", "description": "Workflow generado automáticamente con 2 pasos"}}

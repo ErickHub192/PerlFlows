@@ -1,0 +1,28 @@
+<svg viewBox="0 0 300 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- Logo símbolo - Versión para fondo claro -->
+  <g transform="translate(50, 50)">
+    <!-- Círculo exterior minimalista -->
+    <circle cx="0" cy="0" r="30" fill="none" stroke="#1a1a1a" stroke-width="2" opacity="0.8"/>
+    
+    <!-- Forma geométrica central que sugiere procesamiento y flujo -->
+    <path d="M -15 -7.5 L 15 -7.5 L 10 0 L 15 7.5 L -15 7.5 L -10 0 Z" fill="#1a1a1a"/>
+    
+    <!-- Puntos que representan datos/información -->
+    <circle cx="-22" cy="0" r="2" fill="#1a1a1a"/>
+    <circle cx="22" cy="0" r="2" fill="#1a1a1a"/>
+    
+    <!-- Líneas sutiles que sugieren conexiones -->
+    <line x1="-20" y1="0" x2="-15" y2="0" stroke="#1a1a1a" stroke-width="1.5" opacity="0.6"/>
+    <line x1="15" y1="0" x2="20" y2="0" stroke="#1a1a1a" stroke-width="1.5" opacity="0.6"/>
+  </g>
+  
+  <!-- Texto QYRAL -->
+  <text x="110" y="60" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#1a1a1a" letter-spacing="2px">
+    QYRAL
+  </text>
+  
+  <!-- Tagline sutil -->
+  <text x="112" y="78" font-family="Arial, sans-serif" font-size="10" fill="#1a1a1a" opacity="0.7" letter-spacing="1px">
+    AI AUTOMATION
+  </text>
+</svg>

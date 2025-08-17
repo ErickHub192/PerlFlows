@@ -1,0 +1,125 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Kyra Marketplace Template Schema",
+  "description": "Schema for defining marketplace templates",
+  "type": "object",
+  "required": [
+    "template_id",
+    "name", 
+    "category",
+    "tools",
+    "instructions"
+  ],
+  "properties": {
+    "template_id": {
+      "type": "string",
+      "description": "Unique identifier for the template",
+      "pattern": "^[a-z0-9-]+$",
+      "example": "mexican-business-assistant"
+    },
+    "name": {
+      "type": "string",
+      "description": "Display name for the template",
+      "maxLength": 100,
+      "example": "Asistente de Negocio Mexicano"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "business_sales",
+        "finance_accounting",
+        "customer_service",
+        "marketing_content", 
+        "ecommerce_retail",
+        "mexico_latam",
+        "development_devops"
+      ],
+      "description": "Template category"
+    },
+    "price_usd": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Price in USD cents (e.g., 7900 = $79.00)",
+      "example": 7900
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 500,
+      "description": "Brief description of template functionality"
+    },
+    "tags": {
+      "type": "array",
+      "items": {"type": "string"},
+      "maxItems": 10,
+      "description": "Tags for search and filtering",
+      "example": ["sat", "mexico", "contabilidad"]
+    },
+    "tools": {
+      "type": "array",
+      "items": {"type": "string"},
+      "minItems": 1,
+      "description": "Required tools for this template",
+      "example": ["sat_descarga_cfdi", "gmail_send_message", "reflect"]
+    },
+    "instructions": {
+      "type": "string",
+      "minLength": 50,
+      "description": "Detailed instructions for the AI agent"
+    },
+    "deployment_channels": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["telegram", "web_embed", "whatsapp", "slack"]
+      },
+      "description": "Supported deployment channels"
+    },
+    "memory_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether agent should use memory"
+    },
+    "max_iterations": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 50,
+      "default": 10,
+      "description": "Maximum iterations for agent execution"
+    },
+    "use_cases": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Business use cases for this template"
+    },
+    "target_audience": {
+      "type": "string",
+      "description": "Target market or audience"
+    },
+    "setup_instructions": {
+      "type": "string",
+      "description": "Instructions for setting up the template"
+    },
+    "example_prompts": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Example user prompts for the template"
+    }
+  },
+  "example": {
+    "template_id": "mexican-business-assistant",
+    "name": "Asistente de Negocio Mexicano",
+    "category": "mexico_latam",
+    "price_usd": 7900,
+    "description": "Automatiza contabilidad SAT, facturas y compliance fiscal",
+    "tags": ["sat", "mexico", "contabilidad"],
+    "tools": ["sat_descarga_cfdi", "gmail_send_message", "sheets_read_write", "reflect"],
+    "instructions": "Eres un contador especializado en SAT México...",
+    "deployment_channels": ["telegram", "web_embed"],
+    "memory_enabled": true,
+    "max_iterations": 15,
+    "use_cases": ["Automatización de facturas", "Reportes fiscales"],
+    "target_audience": "PYMES mexicanas",
+    "setup_instructions": "1. Configura credenciales SAT...",
+    "example_prompts": ["Descarga las facturas de este mes"]
+  }
+}
