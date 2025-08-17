@@ -173,25 +173,26 @@ async def lifespan(app: FastAPI):
     # Shutdown (si necesitas limpieza)
 
 app = FastAPI(title="Kyra API", debug=settings.DEBUG, lifespan=lifespan)
-app.mount("/static", StaticFiles(directory="Client/my-preact-app/dist"), name="static")
-app.mount("/static/embed", StaticFiles(directory="Client/embed/src"), name="embed")
+# Frontend files served by shared hosting, not VPS
+# app.mount("/static", StaticFiles(directory="Client/my-preact-app/dist"), name="static")
+# app.mount("/static/embed", StaticFiles(directory="Client/embed/src"), name="embed")
 
-@app.get("/embed/{agent_id}")
-async def embed_page(agent_id: str):
-    return FileResponse("Client/embed/index.html")
+# @app.get("/embed/{agent_id}")
+# async def embed_page(agent_id: str):
+#     return FileResponse("Client/embed/index.html")
 
-# Rutas públicas para el dashboard
-@app.get("/")
-async def dashboard():
-    return FileResponse("Client/my-preact-app/dist/index.html")
+# Frontend routes handled by shared hosting
+# @app.get("/")
+# async def dashboard():
+#     return FileResponse("Client/my-preact-app/dist/index.html")
 
-@app.get("/login")
-async def login_page():
-    return FileResponse("Client/my-preact-app/dist/index.html")
+# @app.get("/login")
+# async def login_page():
+#     return FileResponse("Client/my-preact-app/dist/index.html")
 
-@app.get("/dashboard")
-async def dashboard_page():
-    return FileResponse("Client/my-preact-app/dist/index.html")
+# @app.get("/dashboard")
+# async def dashboard_page():
+#     return FileResponse("Client/my-preact-app/dist/index.html")
 
 # Health check endpoint (público)
 @app.get("/health")
