@@ -206,7 +206,12 @@ async def verify_auth(user_id: int = Depends(get_current_user_id)):
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:5000"],  # Frontend en ambos puertos
+    allow_origins=[
+        "http://localhost:5173", 
+        "http://localhost:5000",
+        "https://perlflow.com",
+        "http://perlflow.com"
+    ],  # Frontend en ambos puertos + domain
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
