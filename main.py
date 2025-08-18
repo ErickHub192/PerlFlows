@@ -275,5 +275,5 @@ async def user_input_required_handler(request: Request, exc: RequiresUserInputEr
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run("main:app", host="127.0.0.1", port=settings.PORT, reload=True, log_level="debug")
+    uvicorn.run("main:app", host="0.0.0.0", port=settings.PORT, reload=True, log_level="debug")
 
