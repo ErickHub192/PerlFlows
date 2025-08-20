@@ -10,6 +10,7 @@ import OAuthRequirementHandler from '../components/OAuthRequirementHandler';
 import ModeToggle from '../components/ModeToggle';
 import ModelSelector from '../components/ModelSelector';
 import DynamicForm from '../components/DynamicForm';
+import { WebhookBanner } from '../components/WebhookBanner';
 import useModeStore from '../stores/modeStore';
 
 export default function ChatView({ chatId }) {
@@ -30,6 +31,8 @@ export default function ChatView({ chatId }) {
   const [currentFlowId, setCurrentFlowId] = useState(null);
   // 🔄 SAVE STATE: Track save button loading
   const [isSaving, setIsSaving] = useState(false);
+  // 🌐 WEBHOOK STATE: Track webhook URLs for current workflow
+  const [activeWebhook, setActiveWebhook] = useState(null);
   const messagesEndRef = useRef(null);
 
   
@@ -534,6 +537,74 @@ export default function ChatView({ chatId }) {
     return hasData;
   };
 
+  // 🌐 WEBHOOK DETECTION: Check if workflow contains webhook step
+  const hasWebhookInWorkflow = () => {
+    if (!hasWorkflowData()) return false;
+    
+    const webhookStep = lastResponse.execution_plan.find(step => 
+      step.node_name === 'Webhook' || 
+      step.action_name === 'trigger' ||
+      step.output?.webhook_urls
+    );
+    
+    console.log('🌐 Webhook detection:', {
+      hasWebhookStep: !!webhookStep,
+      webhookStep: webhookStep?.node_name || 'none',
+      hasWebhookUrls: !!webhookStep?.output?.webhook_urls
+    });
+    
+    return !!webhookStep;
+  };
+
+  // 🌐 GET WEBHOOK URLS: Extract webhook URLs from execution plan
+  const getWebhookUrls = () => {
+    if (!hasWorkflowData()) return null;
+    
+    // 1. Buscar output existente (backward compatibility)
+    const webhookStep = lastResponse.execution_plan.find(step => 
+      step.output?.webhook_urls
+    );
+    if (webhookStep?.output?.webhook_urls) {
+      console.log('🌐 Found existing webhook URLs in output:', webhookStep.output.webhook_urls);
+      return webhookStep.output.webhook_urls;
+    }
+    
+    // 2. Generar URLs estándar si detecta webhook sin output
+    const webhookStepBasic = lastResponse.execution_plan.find(step => 
+      step.node_name === 'Webhook' && step.action_name === 'trigger'
+    );
+    if (webhookStepBasic) {
+      // Usar el ID del step como token único para el webhook
+      const token = webhookStepBasic.id || webhookStepBasic.action_id || 'generated-token';
+      const generatedUrls = {
+        test: `http://localhost:8000/api/webhooks-test/${token}`,
+        production: `https://perlflow.com/api/webhooks/${token}`
+      };
+      console.log('🌐 Generated webhook URLs for step:', {
+        stepId: webhookStepBasic.id,
+        actionId: webhookStepBasic.action_id,
+        token: token,
+        urls: generatedUrls
+      });
+      return generatedUrls;
+    }
+    
+    return null;
+  };
+
+  // 🌐 UPDATE WEBHOOK STATE: When workflow data changes
+  useEffect(() => {
+    if (hasWebhookInWorkflow()) {
+      const webhookUrls = getWebhookUrls();
+      if (webhookUrls) {
+        setActiveWebhook(webhookUrls);
+        console.log('🌐 Webhook URLs detected and set:', webhookUrls);
+      }
+    } else {
+      setActiveWebhook(null);
+    }
+  }, [lastResponse]);
+
   return (
     <div className="flex flex-col h-screen bg-gradient-main">
       {/* Header - Glassmorphism style like legacy */}
@@ -779,8 +850,19 @@ export default function ChatView({ chatId }) {
         </div>
       </div>
 
+      {/* 🌐 WEBHOOK BANNER: Fixed position at top when webhook workflow is active */}
+      {activeWebhook && (
+        <div className="sticky top-0 z-50 px-4 pt-4 pb-2">
+          <WebhookBanner 
+            webhookUrls={activeWebhook}
+            onClose={() => setActiveWebhook(null)}
+          />
+        </div>
+      )}
+
       {/* Messages Area - Legacy glass style */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        
         {error && (
           <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4 mb-4">
             <div className="flex items-center gap-2">
