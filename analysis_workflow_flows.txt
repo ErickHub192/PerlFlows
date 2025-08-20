@@ -1,0 +1,129 @@
+ANÁLISIS END-TO-END: FLUJOS DE WORKFLOWS PERLFLOW
+=========================================================
+
+## WORKFLOW QUE SÍ FUNCIONA: CRON + GMAIL
+==========================================
+
+### REQUEST INICIAL DEL USUARIO:
+- Usuario pide: "Correo motivacional diario a las 7 am con mensaje 'stay hard'"
+
+### PASO 1: GENERACIÓN LLM INICIAL
+==================================
+- LLM genera execution_plan con 2 steps
+- ✅ CORRECTOS: node_name y action_name están presentes:
+  * Step 1: node_name="Cron_Trigger", action_name="schedule"
+  * Step 2: node_name="Gmail", action_name="send_messages"
+
+### PASO 2: ANÁLISIS OAUTH/SMARTFORM
+===================================
+- CAG analiza execution_plan
+- ✅ NO REQUIERE OAUTH: Cron no necesita autenticación
+- ✅ NO REQUIERE SMARTFORM: Gmail se puede usar sin OAuth en este caso
+- Status: "ready_for_review"
+- smart_forms_required: false
+- oauth_requirements: []
+
+### PASO 3: RESPUESTA FINAL AL FRONTEND
+======================================
+- Se envía respuesta completa con:
+  * execution_plan: [step1, step2] ✅ CON node_name/action_name
+  * status: "ready_for_review"
+  * smart_form: null
+  * oauth_requirements: []
+
+### PASO 4: FRONTEND PROCESSING
+==============================
+- ChatView recibe respuesta
+- hasWorkflowData() = true (execution_plan presente)
+- hasWebhookInWorkflow() = false (no es webhook)
+- NO SE MUESTRA SMARTFORM (smart_forms_required = false)
+- Se muestran botones: Ejecutar, Guardar, Activar
+
+### PASO 5: EJECUCIÓN (SI USUARIO ELIGE)
+=======================================
+- Usuario presiona "Ejecutar"
+- Se llama WorkflowRunnerService.execute_workflow_steps()
+- ✅ ÉXITO: StepMetaDTO se crea correctamente porque:
+  * node_name="Cron_Trigger" ✅ PRESENTE
+  * action_name="schedule" ✅ PRESENTE
+  * params={...} ✅ PRESENTE
+  * params_meta=[] ✅ PRESENTE
+
+### FLUJO COMPLETO EXITOSO:
+==========================
+User Request → LLM Generation → CAG Analysis → Frontend Display → Execution
+     ↓              ↓              ↓             ↓               ↓
+"correo diario" → execution_plan → no oauth → show buttons → StepMetaDTO ✅
+
+---
+
+## WORKFLOW QUE FALLA: WEBHOOK + GMAIL (ANÁLISIS COMPLETO)
+==========================================================
+
+### REQUEST INICIAL DEL USUARIO:
+- Usuario pide: "workflow que cuando reciba webhook envíe email de bienvenida"
+
+### PASO 1: GENERACIÓN LLM INICIAL
+==================================
+- ❌ PROBLEMA ENCONTRADO: LLM genera execution_plan INCORRECTO desde el inicio:
+  * Step 1: node_name="Unknown_Node" ❌ (debería ser "Webhook")  
+  * Step 1: action_name="trigger" ✅ (correcto)
+  * Step 1: params={} ❌ (vacío, debería tener flow_id, etc.)
+  * Step 2: node_name="Gmail" ✅ (correcto)
+  * Step 2: action_name="send_messages" ✅ (correcto)
+
+### PASO 2: ANÁLISIS OAUTH/SMARTFORM  
+===================================
+- CAG analiza execution_plan (ya corrupto)
+- ✅ NO REQUIERE OAUTH: Este workflow particular no detectó OAuth
+- ✅ NO REQUIERE SMARTFORM: smart_forms_required = false
+- Status: "ready_for_review"
+- oauth_requirements: []
+
+### PASO 3: SMARTFORM PROCESSING (NO APLICA)
+==========================================
+- NO SE EJECUTA: Este workflow no requirió SmartForm
+- El problema NO está en SmartForm submission
+
+### PASO 4: EJECUCIÓN Y FALLO
+============================
+- Usuario presiona "Ejecutar"
+- WorkflowRunnerService.execute_workflow_steps() recibe:
+  * node_name="Unknown_Node" ❌
+  * action_name="trigger" ✅  
+  * params={} ❌
+- ❌ FALLA: StepMetaDTO(**step) validation error porque:
+  * node_name="Unknown_Node" no es válido
+  * params={} está vacío cuando debería tener datos
+
+### PUNTOS CRÍTICOS A VERIFICAR:
+===============================
+1. ¿LLM genera node_name/action_name en primera respuesta?
+2. ¿CAG preserva los campos al detectar OAuth?
+3. ¿SmartForm submission corrompe execution_plan?
+4. ¿WorkflowRunner recibe datos incompletos?
+
+---
+
+## ✅ ROOT CAUSE CONFIRMADO:
+===========================
+
+### 🎯 PROBLEMA: LLM genera node_name="Unknown_Node" para webhooks
+
+**EVIDENCIA:**
+- Workflow Cron + Gmail: node_name="Cron_Trigger" ✅
+- Workflow Webhook + Gmail: node_name="Unknown_Node" ❌
+
+**CAUSA:** El LLM no conoce el nombre correcto del nodo Webhook
+
+---
+
+## 🛠️ PRÓXIMOS PASOS PARA FIX:
+==============================
+1. ✅ ANALIZADO: Identificar que problema está en LLM generation
+2. 🔍 INVESTIGAR: ¿Cómo obtiene LLM los nombres de nodos disponibles?
+3. 🔧 VERIFICAR: Base de datos de nodos - ¿existe "Webhook" correctamente?  
+4. 🛠️ FIXEAR: Prompt/contexto del LLM para reconocer webhooks
+5. ✅ VALIDAR: Re-generar workflow y confirmar node_name correcto
+
+**TEORÍA DEL USUARIO CONFIRMADA:** Los datos NO se persisten correctamente desde la generación inicial del LLM.

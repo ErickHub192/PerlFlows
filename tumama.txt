@@ -1,0 +1,99 @@
+REPORTE DETALLADO: DEBUGGING FUNCIONALIDAD WEBHOOK PERLFLOW
+============================================================
+
+## 🚨 PROBLEMA PRINCIPAL
+El nodo Webhook tiene UUID corrupto que causa fallo en StepMetaDTO validation:
+- UUID CORRECTO: f2fee4b9-9a32-4906-a59d-ad343e7a9e3c
+- UUID CORRUPTO: f2fee4b9-9a32-4906-a59d-ad343e7a9c (pierde "e3" al final)
+- node_name se convierte en "Unknown_Node" en lugar de "Webhook"
+- Solo afecta nodo Webhook, otros nodos (Drive_Trigger, Gmail, Cron) funcionan perfectamente
+
+## 📊 ESTADO ACTUAL
+- ✅ WEBHOOK BANNER: Implementado en frontend (WebhookBanner.jsx integrado en ChatView.jsx)
+- ✅ WEBHOOK HANDLER: Auto-generación de flow_id funciona
+- ✅ OTROS NODOS: Drive + Gmail, Cron + Gmail funcionan perfectamente sin corruption
+- ❌ WEBHOOK UUID: Se corrompe durante SmartForm processing causando StepMetaDTO error
+
+## 🔍 ANÁLISIS REALIZADO
+
+### CASOS PROBADOS:
+1. **Webhook + Gmail**: ❌ UUID corrupto, node_name="Unknown_Node"
+2. **Drive + Gmail**: ✅ UUID correcto, node_name="Drive_Trigger" 
+3. **Cron + Gmail**: ✅ UUID correcto, node_name="Cron_Trigger"
+
+### ROOT CAUSE IDENTIFICADO:
+En `/mnt/c/kyraProyecto/app/services/conversation_memory_service.py` línea StepMetaDTO creation:
+```python
+action_id=step.get("action_id", step.get("id")),  # ❌ PROBLEMA AQUÍ
+```
+Si action_id no existe, usa step["id"] como fallback, pero ese ID puede estar corrupto.
+
+### ERROR ESPECÍFICO:
+```
+🔧 DIRECT FORCE UPDATE DTO ERROR: 1 validation error for StepMetaDTO
+action_id
+  Input should be a valid UUID, invalid group length in group 4: expected 12, found 10
+  [input_value='f2fee4b9-9a32-4906-a59d-ad343e7a9c', input_type=str]
+```
+
+## 🛠️ DEBUGGING IMPLEMENTADO
+
+### LOGS EXHAUSTIVOS AGREGADOS:
+He añadido debug detallado en 3 puntos críticos de `conversation_memory_service.py`:
+
+1. **🔍 FORCE UPDATE ENTRY**: 
+   - Qué llega inicialmente en workflow_result
+   - Log completo de steps recibidos
+   - Específico para webhook detection
+
+2. **🔍 DIRECT FORCE UPDATE**: 
+   - Qué se procesa después de parameter preservation
+   - node_name, action_name, node_id, action_id para cada step
+   - JSON completo para steps de webhook
+
+3. **🔍 STEP RAW DATA BEFORE DTO**:
+   - Datos exactos antes de crear StepMetaDTO
+   - Valores computados finales (step_id, step_action_id, etc.)
+   - Tipos de datos y valores específicos
+
+## 📋 PRÓXIMOS PASOS
+
+### FASE ACTUAL: END-TO-END WEBHOOK DEBUGGING
+1. **Crear workflow Webhook + Gmail** desde cero
+2. **Llenar SmartForm** con datos test
+3. **Revisar logs exhaustivos** para identificar exactamente dónde se corrompe el UUID:
+   - Si llega correcto en paso 1 pero corrupto en paso 2 → problema en parameter preservation
+   - Si llega correcto en paso 2 pero corrupto en paso 3 → problema en fallback logic
+   - Si llega corrupto desde paso 1 → problema en workflow engine o LLM
+
+### DESPUÉS DEL DEBUG:
+4. **Implementar fix específico** basado en punto exacto de corrupción
+5. **Testing completo** end-to-end webhook functionality
+6. **Validar** que otros nodos siguen funcionando
+7. **Preparar demo** para profesor (miércoles)
+
+## 🎯 OBJETIVO FINAL
+Tener funcionalidad completa de Webhook working end-to-end:
+- ✅ Webhook banner con URLs test/production
+- ✅ UUID preservation correcta 
+- ✅ node_name="Webhook" (no "Unknown_Node")
+- ✅ StepMetaDTO validation exitosa
+- ✅ Workflow execution sin errores
+
+## 📁 ARCHIVOS MODIFICADOS
+- `/mnt/c/kyraProyecto/app/services/conversation_memory_service.py` (debugging exhaustivo)
+- `/mnt/c/kyraProyecto/Client/my-preact-app/src/components/WebhookBanner.jsx` (componente banner)
+- `/mnt/c/kyraProyecto/Client/my-preact-app/src/pages/ChatView.jsx` (integración banner)
+- `/mnt/c/kyraProyecto/app/handlers/webhook_trigger_handler.py` (auto flow_id)
+- `/mnt/c/kyraProyecto/app/routers/webhook_router.py` (parameter fixes)
+
+## 🧪 TESTING PENDIENTE
+- **CRITICAL**: End-to-end webhook debugging con logs exhaustivos
+- Validación de webhook URL generation
+- Testing de webhook execution completa
+- Regression testing de otros nodos (Drive, Cron, Gmail)
+
+---
+STATUS: 🔄 EN PROGRESO - Debugging exhaustivo implementado, listo para end-to-end testing
+NEXT: Crear workflow Webhook + Gmail y analizar logs detallados para encontrar punto exacto de UUID corruption
+PRIORITY: HIGH - Demo miércoles requiere funcionalidad webhook completa

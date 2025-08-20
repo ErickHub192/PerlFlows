@@ -227,6 +227,25 @@ class ConversationMemoryService:
         try:
             import json
             
+            # 🔍 EXHAUSTIVE DEBUG: Log workflow_result as it arrives
+            logger.info(f"🔍 FORCE UPDATE ENTRY: chat_id={chat_id}, user_id={user_id}")
+            logger.info(f"🔍 FORCE UPDATE RAW WORKFLOW_RESULT KEYS: {list(workflow_result.keys())}")
+            
+            # Log steps specifically
+            steps_in_result = workflow_result.get('steps', [])
+            logger.info(f"🔍 FORCE UPDATE STEPS COUNT: {len(steps_in_result)} steps received")
+            
+            for idx, step in enumerate(steps_in_result):
+                logger.info(f"🔍 WORKFLOW_RESULT STEP {idx+1}:")
+                logger.info(f"🔍   RAW node_name: {step.get('node_name')} | action_name: {step.get('action_name')}")
+                logger.info(f"🔍   RAW node_id: {step.get('node_id')} | action_id: {step.get('action_id')}")
+                logger.info(f"🔍   RAW id: {step.get('id')} | step_id: {step.get('step_id')}")
+                
+                # WEBHOOK SPECIFIC DEBUG
+                if step.get('node_name') == 'Webhook' or step.get('node_name') == 'Unknown_Node' or 'webhook' in str(step.get('node_name', '')).lower():
+                    logger.info(f"🔍 WEBHOOK IN WORKFLOW_RESULT: Complete data:")
+                    logger.info(f"🔍   {json.dumps(step, indent=2, default=str)}")
+            
             # 🚨 PRESERVE PARAMS: Load existing context first
             # Load existing context from conversation memory to preserve parameters
             existing_context = await self.load_memory_context(db_session, chat_id)
@@ -269,11 +288,21 @@ class ConversationMemoryService:
                         step["parameters"] = existing_steps[step_id]["parameters"]
                         step["parameters_metadata"] = existing_steps[step_id]["parameters_metadata"]
             
-            # 🔍 DEBUG: Log what we're processing after preservation
+            # 🔍 EXHAUSTIVE DEBUG: Log exactly what arrives in steps
+            import json
             logger.info(f"🔍 DIRECT FORCE UPDATE: Processing {len(steps)} steps after parameter preservation")
             for idx, step in enumerate(steps):
                 params_count = len(step.get("params", {}))
-                logger.info(f"🔍 DIRECT FORCE UPDATE: Step {idx} ({step.get('node_name', 'unknown')}): {params_count} params")
+                logger.info(f"🔍 DIRECT FORCE UPDATE STEP {idx+1}:")
+                logger.info(f"🔍   node_name: {step.get('node_name')} | action_name: {step.get('action_name')}")
+                logger.info(f"🔍   node_id: {step.get('node_id')} | action_id: {step.get('action_id')}")
+                logger.info(f"🔍   id: {step.get('id')} | step_id: {step.get('step_id')}")
+                logger.info(f"🔍   params: {params_count} params")
+                
+                # 🔍 WEBHOOK ESPECÍFICO: Log completo si es webhook
+                if step.get('node_name') == 'Webhook' or step.get('node_name') == 'Unknown_Node' or 'webhook' in str(step.get('node_name', '')).lower():
+                    logger.info(f"🔍 WEBHOOK DETECTED: Full step data:")
+                    logger.info(f"🔍   {json.dumps(step, indent=2, default=str)}")
             
             # 🔧 USE PROPER DTO SERIALIZATION: Convert to Pydantic DTOs for proper serialization (same as save method)
             try:
@@ -282,14 +311,36 @@ class ConversationMemoryService:
                 
                 # Convert dict steps to proper StepMetaDTO objects
                 step_dtos = []
-                for step in steps:
+                for idx, step in enumerate(steps):
                     try:
+                        # 🔍 EXHAUSTIVE DEBUG: Log every field before StepMetaDTO creation
+                        step_id = step.get("id", step.get("step_id"))
+                        step_node_id = step.get("node_id", step.get("id"))
+                        step_action_id = step.get("action_id", step.get("id"))
+                        step_node_name = step.get("node_name", "unknown")
+                        step_action_name = step.get("action_name", "unknown")
+                        
+                        logger.info(f"🔍 STEP {idx+1} RAW DATA BEFORE DTO:")
+                        logger.info(f"🔍   step['id']: {step.get('id')} (type: {type(step.get('id'))})")
+                        logger.info(f"🔍   step['step_id']: {step.get('step_id')} (type: {type(step.get('step_id'))})")
+                        logger.info(f"🔍   step['node_id']: {step.get('node_id')} (type: {type(step.get('node_id'))})")
+                        logger.info(f"🔍   step['action_id']: {step.get('action_id')} (type: {type(step.get('action_id'))})")
+                        logger.info(f"🔍   step['node_name']: {step.get('node_name')} (type: {type(step.get('node_name'))})")
+                        logger.info(f"🔍   step['action_name']: {step.get('action_name')} (type: {type(step.get('action_name'))})")
+                        
+                        logger.info(f"🔍 STEP {idx+1} COMPUTED VALUES:")
+                        logger.info(f"🔍   final_id: {step_id}")
+                        logger.info(f"🔍   final_node_id: {step_node_id}")
+                        logger.info(f"🔍   final_action_id: {step_action_id}")
+                        logger.info(f"🔍   final_node_name: {step_node_name}")
+                        logger.info(f"🔍   final_action_name: {step_action_name}")
+                        
                         step_dto = StepMetaDTO(
-                            id=step.get("id", step.get("step_id")),
-                            node_id=step.get("node_id", step.get("id")),
-                            action_id=step.get("action_id", step.get("id")),
-                            node_name=step.get("node_name", "unknown"),
-                            action_name=step.get("action_name", "unknown"),
+                            id=step_id,
+                            node_id=step_node_id,
+                            action_id=step_action_id,
+                            node_name=step_node_name,
+                            action_name=step_action_name,
                             default_auth=step.get("default_auth"),
                             params=step.get("params", step.get("parameters", {})),
                             params_meta=step.get("params_meta", []),
@@ -300,9 +351,10 @@ class ConversationMemoryService:
                             next=step.get("next")
                         )
                         step_dtos.append(step_dto)
-                        logger.info(f"🔧 DIRECT FORCE UPDATE DTO: Converted step {step.get('node_name', 'unknown')}")
+                        logger.info(f"✅ STEP {idx+1} DTO CREATED: {step_node_name} -> {step_action_name}")
                     except Exception as step_error:
-                        logger.error(f"🔧 DIRECT FORCE UPDATE DTO ERROR: {step_error}")
+                        logger.error(f"🔧 DIRECT FORCE UPDATE DTO ERROR STEP {idx+1}: {step_error}")
+                        logger.error(f"🔧 FAILED STEP RAW DATA: {step}")
                         step_dtos.append(step)
                 
                 # 🔧 FIX: Filter oauth_requirements (same as above)

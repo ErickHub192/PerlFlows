@@ -27,10 +27,10 @@ def build_webhook_url(path: str) -> str:
     return f"{base}{path}"
 
 
-def register_webhook(flow_id: UUID, user_id: int, args: Dict[str, Any]):
-    path = args["production_path"]
-    methods = args.get("methods", ["POST"])
-    respond = args.get("respond", "immediate")
+def register_webhook(flow_id: UUID, user_id: int, trigger_args: Dict[str, Any]):
+    path = trigger_args["production_path"]
+    methods = trigger_args.get("methods", ["POST"])
+    respond = trigger_args.get("respond", "immediate")
 
     async def _endpoint(
         request: Request,
@@ -67,6 +67,7 @@ def register_webhook(flow_id: UUID, user_id: int, args: Dict[str, Any]):
 
     app.include_router(endpoint_router)
     ACTIVE_WEBHOOKS[path] = {"flow_id": str(flow_id), "url": build_webhook_url(path)}
+    return path  # Return webhook_id (using path as ID)
 
 
 def unregister_webhook(path: str):

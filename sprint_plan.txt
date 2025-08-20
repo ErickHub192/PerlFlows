@@ -1,0 +1,118 @@
+SPRINT PLAN - ARREGLAR BUGS CRÍTICOS PARA DEMO PROFESOR
+=======================================================
+
+OBJETIVO: Demo funcional para miércoles con profesor
+DEADLINE: Miércoles 21 Agosto 2025
+
+🏃‍♂️ SPRINT 1: INVESTIGACIÓN Y FIXES (Lunes-Martes)
+=================================================
+
+LUNES (19 Ago):
+□ 9:00-10:00  | Investigar nodos DB disponibles (MySQL vs PostgreSQL)
+□ 10:00-12:00 | Arreglar nodo webhook - debugging completo
+□ 14:00-16:00 | Arreglar nodo base de datos (el que esté disponible)
+□ 16:00-17:00 | Testing básico local de ambos nodos
+
+MARTES (20 Ago):
+□ 9:00-11:00  | Testing exhaustivo workflows completos local
+□ 11:00-12:00 | Fix bugs encontrados en testing
+□ 14:00-15:00 | Preparar casos de demo para profesor
+□ 15:00-16:00 | Sincronización y deployment a producción
+□ 16:00-17:00 | Testing final en producción
+
+📋 ESTRATEGIA DE TESTING Y DEPLOYMENT:
+====================================
+
+FASE 1 - DESARROLLO LOCAL:
+• Arreglar bugs en ambiente local
+• Testing con datos mock/locales
+• Validar flujo completo end-to-end
+
+FASE 2 - TESTING LOCAL EXHAUSTIVO:
+• Crear 3-5 workflows de prueba diferentes
+• Probar todos los nodos críticos
+• Documentar cualquier bug encontrado
+
+FASE 3 - DEPLOYMENT GRADUAL:
+• Subir fixes a staging/producción
+• Testing en ambiente real
+• Rollback plan si algo falla
+
+FASE 4 - DEMO PREP:
+• Preparar workflows demo que FUNCIONAN 100%
+• Tener backup plans por si falla algo
+• Scripts/casos de uso preparados
+
+🎯 WORKFLOWS DE DEMO PARA PROFESOR:
+=================================
+
+DEMO 1: Webhook → Procesamiento → Base de datos
+DEMO 2: Trigger simple → Transformación → Notificación
+DEMO 3: Caso de uso real (e-commerce/CRM básico)
+
+⚡ PROTOCOLO DE SINCRONIZACIÓN:
+=============================
+
+1. TODO LOCAL PRIMERO:
+   • Nunca subir código roto a producción
+   • Testing completo en local antes de push
+
+2. DEPLOYMENT STRATEGY:
+   • Git branch: feature/fix-critical-bugs
+   • Deploy a staging primero
+   • Testing en staging
+   • Deploy a producción solo si staging OK
+
+3. ROLLBACK PLAN:
+   • Tener commit anterior funcional identificado
+   • Script de rollback rápido preparado
+   • Monitoring de errores post-deployment
+
+🚨 CONTINGENCIA SI NO SE LOGRA TODO:
+==================================
+
+PLAN B - DEMO LIMITADO:
+• Mostrar solo los nodos que SÍ funcionan
+• Explicar roadmap de fixes
+• Focus en concepto y potencial
+
+PLAN C - DEMO MOCKUP:
+• Screenshots/videos de funcionalidad
+• Explicación técnica del approach
+• Timeline realista de fixes
+
+📊 MÉTRICAS DE ÉXITO PARA DEMO:
+==============================
+
+MÍNIMO VIABLE:
+□ Al menos 1 workflow completo funciona end-to-end
+□ No crashes durante demo
+□ UI responsive y clara
+
+OBJETIVO IDEAL:
+□ 2-3 workflows diferentes funcionando
+□ Todos los nodos críticos operativos
+□ Experiencia fluida sin bugs visibles
+
+STRETCH GOAL:
+□ Casos de uso reales implementados
+□ Performance optimizada
+□ UX/UI refinada
+
+RESPONSABILIDADES:
+=================
+• DEV 1: Webhook + Testing
+• DEV 2: Base de datos + Deployment
+• AMBOS: Demo prep + QA final
+
+COMUNICACIÓN:
+============
+• Daily sync 9:00 AM
+• Blocker check 15:00 PM  
+• Demo rehearsal martes 16:00
+
+NEXT STEPS INMEDIATOS:
+====================
+1. Revisar qué nodos DB están disponibles
+2. Reproducir bugs de webhook localmente
+3. Crear plan detallado de fixes técnicos

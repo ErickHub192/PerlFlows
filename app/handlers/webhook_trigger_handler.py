@@ -37,18 +37,13 @@ class WebhookTriggerHandler(ActionHandler):
         start = time.perf_counter()
         
         # Validar parámetros requeridos
-        flow_id = params.get("flow_id")
+        flow_id = params.get("flow_id") or str(uuid4())  # ✅ AUTO-GENERAR si no existe
         user_id = params.get("user_id")
         first_step = params.get("first_step")
         scheduler = params.get("scheduler")
         creds = params.get("creds", {})
         
-        if not flow_id:
-            return {
-                "status": "error",
-                "error": "flow_id requerido",
-                "duration_ms": int((time.perf_counter() - start) * 1000),
-            }
+        # ✅ REMOVIDO: flow_id ya no es requerido del usuario
 
         # Generar token único para el webhook
         token = uuid4().hex
@@ -73,8 +68,14 @@ class WebhookTriggerHandler(ActionHandler):
                 "output": {
                     "trigger_type": "webhook",
                     "trigger_args": trigger_args,
-                    "webhook_url": trigger_args["production_path"],
-                    "test_url": trigger_args["test_path"]
+                    "webhook_urls": {
+                        "test": f"http://localhost:8000{trigger_args['test_path']}",
+                        "production": f"https://perlflow.com{trigger_args['production_path']}"
+                    },
+                    "webhook_token": token,
+                    "instructions": "Usa Test URL para pruebas, Production URL para uso real",
+                    "webhook_url": trigger_args["production_path"],  # Legacy compatibility
+                    "test_url": trigger_args["test_path"]  # Legacy compatibility
                 },
                 "duration_ms": duration_ms,
             }
@@ -96,8 +97,14 @@ class WebhookTriggerHandler(ActionHandler):
                     "webhook_id": webhook_id,
                     "registered": True,
                     "trigger_args": trigger_args,
-                    "webhook_url": trigger_args["production_path"],
-                    "test_url": trigger_args["test_path"],
+                    "webhook_urls": {
+                        "test": f"http://localhost:8000{trigger_args['test_path']}",
+                        "production": f"https://perlflow.com{trigger_args['production_path']}"
+                    },
+                    "webhook_token": token,
+                    "instructions": "Usa Test URL para pruebas, Production URL para uso real",
+                    "webhook_url": trigger_args["production_path"],  # Legacy compatibility
+                    "test_url": trigger_args["test_path"],  # Legacy compatibility
                     "token": token
                 },
                 "duration_ms": duration_ms,
