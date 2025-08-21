@@ -328,12 +328,12 @@ const AuthFlow = ({ isOpen, onClose, onSuccess, serviceId, chatId }) => {
                                     </p>
                                     <div className="flex items-center gap-3">
                                         <code className="flex-1 text-white bg-black bg-opacity-40 px-3 py-2 rounded-lg text-xs font-mono break-all border border-white border-opacity-20">
-                                            http://localhost:5000/api/oauth/callback
+                                            https://perlflow.com/api/oauth/callback
                                         </code>
                                         <button
                                             type="button"
                                             onClick={() => {
-                                                navigator.clipboard.writeText('http://localhost:5000/api/oauth/callback');
+                                                navigator.clipboard.writeText('https://perlflow.com/api/oauth/callback');
                                                 // Feedback visual temporal
                                                 const btn = event.target;
                                                 const originalText = btn.textContent;
