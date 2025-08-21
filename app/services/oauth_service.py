@@ -198,11 +198,15 @@ class OAuthService:
                         # Import and trigger continuation via chat service
                         from app.services.chat_service_clean import ChatService
                         from app.ai.llm_clients.llm_service import get_llm_service
-                        from app.services.chat_session_service import get_chat_session_service
+                        from app.services.chat_session_service import ChatSessionService
                         
                         # Create service instances directly instead of using FastAPI DI
                         llm_service = get_llm_service()  # No await - it's synchronous
-                        chat_session_service = await get_chat_session_service(self.db)
+                        
+                        # Fix: get_chat_session_service is NOT async
+                        from app.repositories.chat_session_repository import get_chat_session_repository
+                        chat_session_repo = get_chat_session_repository(self.db)
+                        chat_session_service = ChatSessionService(chat_session_repo)
                         chat_service = ChatService(llm_service, chat_session_service)
                         
                         # Create system message to continue workflow automatically
