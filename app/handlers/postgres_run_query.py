@@ -15,18 +15,36 @@ def _postgres_schema() -> Dict[str, Any]:
     return {
         "type": "object",
         "properties": {
-            "dsn": {
+            "host": {
                 "type": "string",
-                "title": "DSN",
-                "description": "Cadena de conexión libpq (por ejemplo: 'postgres://user:pass@host:port/db')"
+                "title": "Host",
+                "description": "Servidor PostgreSQL (ej: localhost)",
+                "default": "localhost"
             },
-            "query": {
+            "port": {
+                "type": "integer",
+                "title": "Puerto",
+                "description": "Puerto de PostgreSQL",
+                "default": 5432
+            },
+            "database": {
                 "type": "string",
-                "title": "Consulta SQL",
-                "description": "Sentencia SQL que se ejecutará"
+                "title": "Base de datos",
+                "description": "Nombre de la base de datos"
+            },
+            "username": {
+                "type": "string",
+                "title": "Usuario",
+                "description": "Usuario de PostgreSQL"
+            },
+            "password": {
+                "type": "string",
+                "title": "Contraseña",
+                "description": "Contraseña del usuario",
+                "format": "password"
             }
         },
-        "required": ["dsn", "query"]
+        "required": ["host", "database", "username", "password"]
     }
 
 @register_node("Postgres.run_query")
@@ -34,30 +52,48 @@ def _postgres_schema() -> Dict[str, Any]:
 class PostgresRunQueryHandler(ActionHandler):
     """
     Handler para la acción 'run_query' de PostgreSQL.
-    Parámetros en params:
-      - dsn   (str, requerido): URI de conexión libpq.
-      - query (str, requerido): Sentencia SQL a ejecutar.
+    
+    Separación de responsabilidades:
+    - params: Solo 'query' (lo que pide el LLM)
+    - creds: host, port, database, username, password (del authenticator)
     """
 
     def __init__(self, creds: Dict[str, Any]):
-        # En este caso no usamos 'creds'; el DSN viene en params.
-        pass
+        # Credenciales vienen del authenticator, no de params
+        self.creds = creds
 
     async def execute(self, params: Dict[str, Any]) -> Dict[str, Any]:
         start_ts = time.perf_counter()
 
-        # 1) Validación de parámetros
-        dsn   = params.get("dsn")
+        # 1) Validar parámetro del LLM (solo query)
         query = params.get("query")
-        if not dsn or not query:
+        if not query:
             return {
-                "status":      "error",
-                "error":       "Faltan parámetros: 'dsn' y 'query' son requeridos",
-                "output":      None,
+                "status": "error",
+                "error": "Falta parámetro requerido: 'query'",
+                "output": None,
                 "duration_ms": 0
             }
 
-        # 2) Conexión y ejecución
+        # 2) Obtener credenciales del authenticator
+        host = self.creds.get("host")
+        port = self.creds.get("port", 5432)
+        database = self.creds.get("database")
+        username = self.creds.get("username")
+        password = self.creds.get("password")
+        
+        if not all([host, database, username, password]):
+            return {
+                "status": "error",
+                "error": "Credenciales incompletas: faltan host, database, username o password",
+                "output": None,
+                "duration_ms": 0
+            }
+
+        # 3) Construir DSN internamente
+        dsn = f"postgresql://{username}:{password}@{host}:{port}/{database}"
+
+        # 4) Conexión y ejecución
         try:
             conn = await asyncpg.connect(dsn=dsn) 
             records = await conn.fetch(query)  
@@ -72,12 +108,12 @@ class PostgresRunQueryHandler(ActionHandler):
         except Exception as e:
             status, output, error = "error", None, str(e)
 
-        # 3) Medir duración
+        # 5) Medir duración
         duration_ms = int((time.perf_counter() - start_ts) * 1000)
 
         return {
-            "status":      status,
-            "output":      output,
-            "error":       error,
+            "status": status,
+            "output": output,
+            "error": error,
             "duration_ms": duration_ms
         }
