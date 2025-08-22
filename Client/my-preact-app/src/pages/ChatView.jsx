@@ -12,6 +12,7 @@ import ModelSelector from '../components/ModelSelector';
 import DynamicForm from '../components/DynamicForm';
 import { WebhookBanner } from '../components/WebhookBanner';
 import useModeStore from '../stores/modeStore';
+import { hasWebhookInWorkflow as hasWebhook, getWebhookInfo } from '../utils/webhookDetection';
 
 export default function ChatView({ chatId }) {
   const { token } = useAuth();
@@ -537,59 +538,47 @@ export default function ChatView({ chatId }) {
     return hasData;
   };
 
-  // 🌐 WEBHOOK DETECTION: Check if workflow contains webhook step
+  // 🌐 WEBHOOK DETECTION: Check if workflow contains webhook step using scalable system
   const hasWebhookInWorkflow = () => {
     if (!hasWorkflowData()) return false;
     
-    const webhookStep = lastResponse.execution_plan.find(step => 
-      step.node_name === 'Webhook' || 
-      step.action_name === 'trigger' ||
-      step.output?.webhook_urls
-    );
+    // ✅ ESCALABLE: Usar sistema modular de detección
+    const hasWebhookStep = hasWebhook(lastResponse);
+    const webhookInfo = getWebhookInfo(lastResponse);
     
     console.log('🌐 Webhook detection:', {
-      hasWebhookStep: !!webhookStep,
-      webhookStep: webhookStep?.node_name || 'none',
-      hasWebhookUrls: !!webhookStep?.output?.webhook_urls
+      hasWebhookStep,
+      webhookNodeName: webhookInfo?.step?.node_name || 'none',
+      webhookDisplayName: webhookInfo?.displayName || 'none',
+      hasWebhookUrls: !!webhookInfo?.urls
     });
     
-    return !!webhookStep;
+    return hasWebhookStep;
   };
 
-  // 🌐 GET WEBHOOK URLS: Extract webhook URLs from execution plan
+  // 🌐 GET WEBHOOK URLS: Extract webhook URLs using scalable system
   const getWebhookUrls = () => {
     if (!hasWorkflowData()) return null;
     
-    // 1. Buscar output existente (backward compatibility)
-    const webhookStep = lastResponse.execution_plan.find(step => 
-      step.output?.webhook_urls
-    );
-    if (webhookStep?.output?.webhook_urls) {
-      console.log('🌐 Found existing webhook URLs in output:', webhookStep.output.webhook_urls);
-      return webhookStep.output.webhook_urls;
+    // ✅ ESCALABLE: Usar sistema modular de generación de URLs
+    const webhookInfo = getWebhookInfo(lastResponse);
+    
+    if (!webhookInfo) return null;
+    
+    // 1. Verificar si ya hay URLs en el output del step (prioridad)
+    if (webhookInfo.step.output?.webhook_urls) {
+      console.log('🌐 Found existing webhook URLs in output:', webhookInfo.step.output.webhook_urls);
+      return webhookInfo.step.output.webhook_urls;
     }
     
-    // 2. Generar URLs estándar si detecta webhook sin output
-    const webhookStepBasic = lastResponse.execution_plan.find(step => 
-      step.node_name === 'Webhook' && step.action_name === 'trigger'
-    );
-    if (webhookStepBasic) {
-      // Usar el ID del step como token único para el webhook
-      const token = webhookStepBasic.id || webhookStepBasic.action_id || 'generated-token';
-      const generatedUrls = {
-        test: `http://localhost:8000/api/webhooks-test/${token}`,
-        production: `https://perlflow.com/api/webhooks/${token}`
-      };
-      console.log('🌐 Generated webhook URLs for step:', {
-        stepId: webhookStepBasic.id,
-        actionId: webhookStepBasic.action_id,
-        token: token,
-        urls: generatedUrls
-      });
-      return generatedUrls;
-    }
-    
-    return null;
+    // 2. Generar URLs automáticamente según el tipo de webhook
+    console.log('🌐 Generated webhook URLs for step:', {
+      nodeType: webhookInfo.step.node_name,
+      stepId: webhookInfo.step.id,
+      urlType: webhookInfo.config.urlType,
+      urls: webhookInfo.urls
+    });
+    return webhookInfo.urls;
   };
 
   // 🌐 UPDATE WEBHOOK STATE: When workflow data changes
