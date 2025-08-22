@@ -70,16 +70,11 @@ class FormWebhookTriggerHandler(ActionHandler):
         start = time.perf_counter()
         
         # Validar parámetros requeridos
-        flow_id = params.get("flow_id")
+        flow_id = params.get("flow_id") or str(uuid4())  # ✅ AUTO-GENERAR si no existe
         user_id = params.get("user_id")
         form_provider = params.get("form_provider", "generic").lower()
         
-        if not flow_id:
-            return {
-                "status": "error",
-                "error": "flow_id requerido para Form Webhook Trigger",
-                "duration_ms": int((time.perf_counter() - start) * 1000),
-            }
+        # ✅ AUTO-GENERACIÓN: flow_id es ahora opcional como en webhook_trigger_handler.py
 
         if form_provider not in self.PROVIDER_CONFIGS:
             return {

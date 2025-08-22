@@ -548,16 +548,47 @@ class SimpleWorkflowEngine:
             # 🎯 CRITICAL FIX: Second LLM call for SmartForm generation when OAuth satisfied but parameters missing  
             # ONLY run after first LLM call when OAuth is already satisfied but parameters are missing
             if oauth_already_satisfied and planning_result:
-                # Check if workflow has null/empty parameters that need user input
+                # 🔧 UNIVERSAL FIX: Check if workflow has null/empty parameters that need user input
+                # Works for ANY number of nodes (1, 2, 6, 10+ nodes)
                 planned_steps = planning_result.get("steps", [])
                 has_missing_params = False
                 
                 for step in planned_steps:
-                    params = step.get("parameters", {})
-                    for param_key, param_value in params.items():
+                    # 🎯 FIX: Check BOTH "parameters" AND "params" fields
+                    parameters = step.get("parameters", {})
+                    params = step.get("params", {})
+                    
+                    # 🎯 UNIVERSAL DETECTION: Empty objects {} = missing parameters
+                    # This works for N nodes: 1, 2, 6, 10+, any number
+                    if not parameters and not params:
+                        # Both fields are empty - definitely missing params
+                        has_missing_params = True
+                        break
+                    elif not parameters and params == {}:
+                        # parameters missing and params is empty object - missing params
+                        has_missing_params = True
+                        break
+                    elif parameters == {} and not params:
+                        # params missing and parameters is empty object - missing params
+                        has_missing_params = True
+                        break
+                    elif parameters == {} and params == {}:
+                        # Both are empty objects - missing params
+                        has_missing_params = True
+                        break
+                    
+                    # 🎯 ADDITIONAL CHECK: Even if objects exist, check for null/empty values
+                    for param_value in parameters.values():
                         if param_value is None or param_value == "" or param_value == "null":
                             has_missing_params = True
                             break
+                    
+                    if not has_missing_params:
+                        for param_value in params.values():
+                            if param_value is None or param_value == "" or param_value == "null":
+                                has_missing_params = True
+                                break
+                    
                     if has_missing_params:
                         break
                 
@@ -612,6 +643,15 @@ class SimpleWorkflowEngine:
                             self.logger.logger.info(f"🎯 STEPS UPDATED: {len(planned_steps)} steps updated from second LLM call")
                     else:
                         self.logger.logger.warning("🎯 SMARTFORM FAILED: Second LLM call returned no result")
+                        # 🚨 SAFETY: If we detected missing params but SmartForm failed, 
+                        # force status to prevent auto-execution
+                        planning_result["status"] = "needs_user_input"
+                        self.logger.logger.info("🛡️ SAFETY: Forced status to needs_user_input to prevent auto-execution with empty params")
+                
+                # 🛡️ ADDITIONAL SAFETY: If we detected missing params but no SmartForm was generated at all
+                if has_missing_params and not planning_result.get("smart_form"):
+                    planning_result["status"] = "ready_for_review"  # Show for review instead of auto-execute
+                    self.logger.logger.info("🛡️ SAFETY: Missing params detected but no SmartForm - forcing ready_for_review status")
             
             # ✅ ELIMINATED should_call_llm_again - No more duplicate calls!
             

@@ -66,6 +66,12 @@ sexo.txt
 xp.txt
 *.test
 
+# Testing documents - no trackear docs de testing temporales
+testing/e2e/*.md
+testing/features/*.md
+testing/reports/*.md
+*.txt
+
 # Cache
 .cache/
 .pytest_cache/
